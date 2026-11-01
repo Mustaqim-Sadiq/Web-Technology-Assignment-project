@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script type="module" src="./src/scripts/one.js"></script>
   
   <title>Mustaqim Assignment P1</title>
   
@@ -12,26 +11,38 @@
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Axios CDN-->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body class="bg-gray-100 text-gray-800">
 
-  <!-- 1. COMPONENT: Navbar -->
-  <header>
-    <nav class="bg-blue-600 p-4 text-white flex justify-between items-center">
-      <h1 class="text-xl font-bold">MyWebsite</h1>
-      <div class="flex gap-4 text-sm font-medium">
-        <a href="index.html" class="underline font-bold">Home</a>
-        <a href="src/pages/about.html" class="hover:text-gray-200">About</a>
-        <a href="src/pages/contact.html" class="hover:text-gray-200">Contact</a>
-        <a href="src/pages/signin.html" class="hover:text-gray-200">Sign In</a>
-        <a href="src/pages/signup.html" class="bg-white text-blue-600 px-3 py-1.5 rounded hover:bg-gray-100">Sign Up</a>
-      </div>
+  <!-- 1. COMPONENT: Navbar with Mobile Responsive Menu -->
+  <header class="bg-blue-600 text-white">
+    <nav class="max-w-4xl mx-auto p-4 flex flex-wrap justify-between items-center">
+      <h1 class="text-xl font-bold tracking-wide">Dream Builders</h1>
+
+      <!-- Mobile Hamburger Button (Only on small screens) -->
+      <button id="mobile-menu-btn" aria-label="Toggle Menu" class="md:hidden flex flex-col justify-center items-center gap-1.5 w-8 h-8 p-1 text-white border border-blue-400 rounded focus:outline-none">
+        <span class="block w-5 h-0.5 bg-white"></span>
+        <span class="block w-5 h-0.5 bg-white"></span>
+        <span class="block w-5 h-0.5 bg-white"></span>
+      </button>
+
+      <!-- Navigation Links -->
+      <menu id="nav-links" class="hidden md:flex flex-col md:flex-row w-full md:w-auto items-center gap-4 text-sm font-medium mt-4 md:mt-0 p-0 list-none">
+        <a href="index.html" class="underline font-bold hover:text-gray-200 py-1">Home</a>
+        <a href="src/pages/about.html" class="hover:text-gray-200 py-1">About</a>
+        <a href="src/pages/contact.html" class="hover:text-gray-200 py-1">Contact</a>
+        <a href="src/pages/signin.html" class="hover:text-gray-200 py-1">Sign In</a>
+        <a href="src/pages/signup.html" class="bg-white text-blue-600 px-3 py-1.5 rounded hover:bg-gray-100 font-semibold w-full md:w-auto text-center">Sign Up</a>
+      </menu>
     </nav>
 
     <!-- 2. COMPONENT: Hero Section -->
-    <section class="text-center py-10 bg-white border-b border-gray-300">
-      <h1 class="text-3xl font-bold text-gray-900">Welcome to My Project</h1>
-      <p class="text-gray-600 mt-2">App ka ghar,App ki imanat.</p>
+    <section class="text-center py-10 bg-white border-b border-gray-300 text-gray-800">
+      <h1 class="text-2xl md:text-3xl font-bold text-gray-900 px-2">Welcome to My Project</h1>
+      <p class="text-gray-600 mt-2 text-sm md:text-base">App ka ghar,App ki imanat.</p>
     </section>
   </header>
 
@@ -44,7 +55,7 @@
     </aside>
 
     <!-- 4. COMPONENT: Tags -->
-    <section class="flex gap-2">
+    <section class="flex flex-wrap gap-2">
       <span class="bg-purple-200 text-green-800 px-2 py-1 rounded text-sm">5 marla</span>
       <span class="bg-yellow-200 text-green-800 px-2 py-1 rounded text-sm">10 marla</span>
       <span class="bg-blue-200 text-green-800 px-2 py-1 rounded text-sm">1 kanal</span>
@@ -69,33 +80,65 @@
       </div>
     </section>
 
-    <!-- 6. COMPONENT: Table -->
-    <section class="bg-white p-4 border border-gray-300 rounded">
-      <h2 class="text-xl font-bold mb-3">Current Projects Info</h2>
-      <table class="w-full border-collapse border border-gray-300 text-left text-sm">
-        <thead>
-          <tr class="bg-gray-200">
-            <th class="border border-gray-300 p-2">Customers Name</th>
-            <th class="border border-gray-300 p-2">Application</th>
-            <th class="border border-gray-300 p-2">Case</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="border border-gray-300 p-2">customer 1</td>
-            <td class="border border-gray-300 p-2">Rejected</td>
-            <td class="border border-gray-300 p-2 text-green-600">Done</td>
-          </tr>
-          <tr>
-            <td class="border border-gray-300 p-2">customer 2</td>
-            <td class="border border-gray-300 p-2">accepted</td>
-            <td class="border border-gray-300 p-2 text-blue-600">In Progress</td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- CRUD Application (Local Storage + Search Filter) -->
+    <section class="bg-white p-5 border border-gray-300 rounded space-y-4">
+      <h2 class="text-xl font-bold text-gray-800">Project Management (CRUD & Filter)</h2>
+      
+      <!-- Input Form -->
+      <form id="crud-form" class="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <input type="hidden" id="item-id">
+        <input type="text" id="cust-name" required placeholder="Customer Name" class="border border-gray-300 rounded p-2 text-sm focus:outline-none focus:border-blue-500">
+        <input type="text" id="proj-title" required placeholder="Project (e.g. 10 Marla House)" class="border border-gray-300 rounded p-2 text-sm focus:outline-none focus:border-blue-500">
+        <select id="proj-status" class="border border-gray-300 rounded p-2 text-sm focus:outline-none focus:border-blue-500">
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
+          <option value="Pending">Pending</option>
+        </select>
+        <button type="submit" id="form-submit-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded text-sm transition">
+          Add Project
+        </button>
+      </form>
+
+      <!-- Real-Time Search Filter -->
+      <fieldset class="border-none p-0 m-0">
+        <input type="text" id="search-input" placeholder="Search projects by name or title..." class="w-full border border-gray-300 rounded p-2 text-sm focus:outline-none focus:border-blue-500">
+      </fieldset>
+
+      <!-- Table displaying Array of Objects -->
+      <section class="overflow-x-auto">
+        <table class="w-full border-collapse border border-gray-300 text-left text-sm">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="border border-gray-300 p-2">Customer</th>
+              <th class="border border-gray-300 p-2">Project</th>
+              <th class="border border-gray-300 p-2">Status</th>
+              <th class="border border-gray-300 p-2 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="crud-table-body">
+            <!-- Dynamic rows will render here -->
+          </tbody>
+        </table>
+      </section>
     </section>
 
-    <!-- 7. COMPONENT: YT Video embedding -->
+    <!-- Free Public API with Axios -->
+    <section class="bg-white p-5 border border-gray-300 rounded space-y-3">
+      <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+        <div>
+          <h2 class="text-xl font-bold text-gray-800">Public API Data (via Axios)</h2>
+          <p class="text-xs text-gray-500">Fetched live from JSONPlaceholder Users API</p>
+        </div>
+        <button id="fetch-api-btn" class="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1.5 rounded font-medium transition">
+          Reload API Data
+        </button>
+      </header>
+      <section id="api-data-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+        <p class="text-sm text-gray-500 col-span-full">Loading API data...</p>
+      </section>
+    </section>
+
+    <!-- 7. COMPONENT: YT Video Embed -->
     <section class="bg-white p-4 border border-gray-300 rounded">
       <h2 class="text-xl font-bold mb-3">Featured Video</h2>
       <iframe 
@@ -139,14 +182,16 @@
   <!-- 10. COMPONENT: Footer -->
   <footer class="bg-gray-800 text-white p-4 text-center mt-10 text-sm">
     <p>&copy; 2026 MyWebsite. Assignment.</p>
-    <div class="flex justify-center gap-4 mt-2 text-xs text-gray-300">
+    <nav class="flex justify-center gap-4 mt-2 text-xs text-gray-300">
       <a href="index.html" class="hover:underline">Home</a>
       <a href="src/pages/about.html" class="hover:underline">About</a>
       <a href="src/pages/contact.html" class="hover:underline">Contact</a>
       <a href="src/pages/signin.html" class="hover:underline">Sign In</a>
       <a href="src/pages/signup.html" class="hover:underline">Sign Up</a>
-    </div>
+    </nav>
   </footer>
 
+  <!-- Script at bottom for direct file loading -->
+  <script src="./src/scripts/one.js"></script>
 </body>
 </html>
